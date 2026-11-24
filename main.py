@@ -1,55 +1,59 @@
-"""make.fun entry: One Letter for Your Day.
+"""One Letter for Your Day -- make.fun entry.
 
-Writes exactly one character, the letter "D", to /output/entry.txt.
-Stdlib-only (os, sys); no network; deterministic.
+The program writes a single letter, "D", to /output/entry.txt and
+nothing else. Only the Python standard library is used (os and sys);
+there is no network access, no randomness, and the output is the
+same on every run.
 
-Why "D" (from the published judge brief, criteria in order):
-1. "D" is the first letter of a word that describes the day:
-   "doomscrolling" -- scrolling bad news in bed at 3 a.m. instead of
-   sleeping. A genuine initial, not a trick letter (unlike "X" for
-   "exhausted", which is not the word's first letter).
-2. Vivid and specific: "doomscrolling" calls up a sharp picture -- the
-   phone glow, 3 a.m., the thumb that will not stop -- rather than a
-   vague mood like "amazing" or "tired".
-3. Funny and surprising: a self-own, the kind of word a reader repeats
-   to a friend; funnier than the deadpan "zero sleep".
-4. True to a real day: the most ordinary 2026 night there is; more
-   literally true, more often, than a night of literally zero sleep.
-5. The letter fits its word: "D" is the plain initial of
-   "doomscrolling", and no sharper initial for that word exists.
-   "Obscurity for its own sake" is avoided -- "doomscrolling" is the
-   word the field itself converged on (5+ rival entries picked it),
-   so it is what the judge most plausibly infers for "D".
+The letter: "D" stands for "doomscrolling" -- the word for a day
+spent scrolling bad news in bed at 3 a.m. instead of sleeping. It
+is a real initial of a real word for the day, and the word itself
+paints a concrete picture (phone glow, 3 a.m., a thumb that will
+not stop) rather than a vague mood. It is a self-own, which makes
+it funny, and it is true of an ordinary night in 2026 far more
+often than a night of literally zero sleep.
 
-Gate (from the competition resolution): /output/entry.txt must be
-UTF-8 text of exactly 1 character, not only white space. A trailing
-newline would make it 2 characters and fail the gate, so the file is
-written with no newline at all: exactly one byte, "D".
+The competition gate requires /output/entry.txt to hold UTF-8 text
+of exactly one character, and not only white space. A trailing
+newline would count as a second character and fail the gate, so
+the file is written with no newline: precisely one byte, "D".
 """
 
 import os
 import sys
 
-LETTER = "D"
+DAY_LETTER = "D"
+
+OUTPUT_DIR = "/output"
+OUTPUT_PATH = os.path.join(OUTPUT_DIR, "entry.txt")
 
 
-def main() -> int:
-    # Gate: exactly one character, A-Z, not white space.
-    if len(LETTER) != 1:
-        print(f"entry length {len(LETTER)} is not 1", file=sys.stderr)
+def _check_letter(letter):
+    """Return an error message if the letter breaks the gate, else None."""
+    if len(letter) != 1:
+        return "entry must be exactly one character, got %d" % len(letter)
+    if letter != letter.strip():
+        return "entry must not be only white space"
+    if letter < "A" or letter > "Z":
+        return "entry must be a capital letter A-Z, got %r" % letter
+    return None
+
+
+def _write_entry(letter):
+    """Write the single letter with no trailing newline."""
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as handle:
+        handle.write(letter)
+
+
+def run():
+    problem = _check_letter(DAY_LETTER)
+    if problem is not None:
+        print(problem, file=sys.stderr)
         return 1
-    if not ("A" <= LETTER <= "Z"):
-        print(f"entry {LETTER!r} is not a letter A-Z", file=sys.stderr)
-        return 1
-    if not LETTER.strip():
-        print("entry is only white space", file=sys.stderr)
-        return 1
-    os.makedirs("/output", exist_ok=True)
-    # newline="" + explicit write: no "\n" is added, file is exactly 1 byte.
-    with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
-        f.write(LETTER)
+    _write_entry(DAY_LETTER)
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run())
