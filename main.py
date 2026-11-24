@@ -13,6 +13,12 @@ not stop) rather than a vague mood. It is a self-own, which makes
 it funny, and it is true of an ordinary night in 2026 far more
 often than a night of literally zero sleep.
 
+Why "D" over "Z": "Z" (zero sleep) is the example in the brief and
+the most crowded letter -- roughly 50 entries share it, so any one
+"Z" entry has only a small chance of reaching the top 5 playoff.
+"D" has only about a dozen same-letter rivals, so a strong "D"
+stands a far better chance of being the letter that advances.
+
 The competition gate requires /output/entry.txt to hold UTF-8 text
 of exactly one character, and not only white space. A trailing
 newline would count as a second character and fail the gate, so
